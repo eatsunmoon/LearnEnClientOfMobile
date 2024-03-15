@@ -1,0 +1,22 @@
+{
+    "appId": "com.zhiyi.appclient",
+    "productName": "En Client",
+    "copyright": "Copyright © 2024 Zhiyi",
+    "directories": {
+      "output": "dist"
+    },
+    "platforms": [
+      "win",
+      "mac",
+      "linux"
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "linux": {
+      "target": "deb"
+    }
+  }
