@@ -1,5 +1,7 @@
 const { app, BrowserWindow, ipcMain, globalShortcut, Menu, MenuItem } = require('electron');
 const { createModal } = require('./modal.js')
+const { initServer } = require('./server.js')
+const { registerBossShortcuts,registerGlobalShortcus } = require('./shortcuts.js')
 const createSingleInstance = require('./singleInstance.js');
 
 const createWindow = (
@@ -15,7 +17,7 @@ const createWindow = (
         }
     });
 
-    win.loadFile('index.html');
+    win.loadFile('start.html');
     win.on('close', () => {
         app.exit()
     })
@@ -25,57 +27,6 @@ const createWindow = (
     });
     return win
 };
-
-function registerGlobalShortcus(win) {
-    globalShortcut.register('CommandOrControl+Left', () => {
-        !BrowserWindow.getFocusedWindow() && win.webContents.executeJavaScript('window.rewind&&window.rewind()');
-    });
-
-    globalShortcut.register('CommandOrControl+Right', () => {
-        !BrowserWindow.getFocusedWindow() && win.webContents.executeJavaScript('window.forward&&window.forward()');
-
-    });
-
-    globalShortcut.register('CommandOrControl+End', () => {
-        !BrowserWindow.getFocusedWindow() && win.webContents.executeJavaScript('window.toggleSub&&window.toggleSub()');
-    });
-
-    globalShortcut.register('CommandOrControl+Space', () => {
-        !BrowserWindow.getFocusedWindow() && win.webContents.executeJavaScript('window.togglePlay&&window.togglePlay()');
-    });
-}
-
-var registered = true
-var hide=false
-function registerBossShortcuts(win) {
-    globalShortcut.register('CommandOrControl+Shift+PageUp', () => {
-        if(BrowserWindow.getFocusedWindow()==null){
-            win.show()
-            hide=false
-            return
-        }
-        if (hide) {
-            hide=false
-            win.show()
-        } else {
-            hide=true
-            win.hide()
-        }
-    });
-    globalShortcut.register('CommandOrControl+Shift+PageDown', () => {
-        console.log(registered)
-        if (registered) {
-            globalShortcut.unregisterAll()
-            setTimeout(() => {
-                registerBossShortcuts(win)
-                registered = false
-            }, 100);
-        } else {
-            registerGlobalShortcus(win)
-            registered = true
-        }
-    });
-}
 
 
 
@@ -93,6 +44,12 @@ app.whenReady().then(() => {
                 label: 'Global Shortcuts',
                 click: () => {
                     createModal(mainWindow, "shortcuts.html")
+                },
+            }));
+            currentMenu.append(new MenuItem({
+                label: 'Http Server',
+                click: () => {
+                    createModal(mainWindow, "server.html",initServer)
                 },
             }));
             Menu.setApplicationMenu(currentMenu);

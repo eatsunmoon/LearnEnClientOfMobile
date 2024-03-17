@@ -1,6 +1,6 @@
 const { BrowserWindow } = require('electron');
 
-function createModal(parent, filePath) {
+function createModal(parent, filePath,onCreated) {
     
 
     let win = new BrowserWindow({
@@ -50,6 +50,10 @@ function createModal(parent, filePath) {
         win = null
         parent.setEnabled(true)
     });
+
+    if(onCreated){
+        onCreated(win)
+    }
 }
 
 module.exports = {
