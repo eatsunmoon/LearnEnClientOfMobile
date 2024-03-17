@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain, globalShortcut, Menu, MenuItem } = require('electron');
 const { createModal } = require('./modal.js')
+const createSingleInstance = require('./singleInstance.js');
 
 const createWindow = (
 ) => {
@@ -78,9 +79,9 @@ function registerBossShortcuts(win) {
 
 
 
-
+let mainWindow;
 app.whenReady().then(() => {
-    const mainWindow = createWindow();
+    mainWindow = createWindow();
     registerBossShortcuts(mainWindow)
     registerGlobalShortcus(mainWindow)
     // Get the current application menu
@@ -103,5 +104,5 @@ app.on('window-all-closed', () => {
     globalShortcut.unregisterAll()
     app.quit();
 });
-
+createSingleInstance(mainWindow)
 

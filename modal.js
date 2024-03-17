@@ -28,8 +28,8 @@ function createModal(parent, filePath) {
         `);
         const { width, height } = JSON.parse(contentSize);
 
-        const childWidth = Math.round(width)+20;
-        const childHeight = Math.round(height)+40;
+        const childWidth = Math.round(width)+60;
+        const childHeight = Math.round(height)+80;
         win.setSize(childWidth,childHeight );
 
         const parentBounds = parent.getBounds();
