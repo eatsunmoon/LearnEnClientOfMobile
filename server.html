@@ -41,7 +41,7 @@
 
 
         chooseDirBtn.addEventListener('click', (event) => {
-            ipcRenderer.send('open-directory-dialog');
+            ipcRenderer.send('open-directory-dialog',directoryInput.value);
         });
 
         ipcRenderer.on('selected-directory', (event, selectedDirectory) => {

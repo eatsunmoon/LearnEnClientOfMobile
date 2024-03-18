@@ -37,8 +37,7 @@ function registerBossShortcuts(win) {
         }
     });
     globalShortcut.register('CommandOrControl+Shift+PageDown', () => {
-        console.log(registered)
-        if (registered) {
+        if (StateManager.state.shortcutsRegistered) {
             globalShortcut.unregisterAll()
             setTimeout(() => {
                 registerBossShortcuts(win)
