@@ -49,6 +49,7 @@ module.exports = {
                 s.use(express.static(path.resolve(directory)));
                 setExpress(s)
                 server = s.listen(port, () => {
+                    server.setTimeout(0)
                     const ipAddress = getLocalIpAddress();
                     let msg = `Server running at http://${ipAddress}:${port}/`
                     if (!ipAddress) {
