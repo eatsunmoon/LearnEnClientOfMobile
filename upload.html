@@ -1,5 +1,7 @@
 <h1>Upload a File</h1>
-<input type="file" id="files_pre" required multiple>
+<input type="file" id="files_pre" multiple>
+<input type="file" id="files_pre0" multiple>
+<input type="file" id="files_pre1" multiple>
 <button id="upload">Upload</button>
 <div id="info"></div>
 <div id="upload_info"></div>
@@ -14,7 +16,9 @@
         document.querySelector("#upload").disabled=true
         const startTime = new Date().getTime(); // Record start time
         const fileInput = document.getElementById('files_pre');
-        const files = Array.from(fileInput.files);
+        const fileInput1 = document.getElementById('files_pre0');
+        const fileInput2 = document.getElementById('files_pre1');
+        const files = Array.from(fileInput.files).concat(Array.from(fileInput1.files), Array.from(fileInput2.files));;
 
         let totalSize = 0;
         files.forEach(file => {
