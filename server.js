@@ -98,6 +98,7 @@ async function generateHTMLList(dirPath) {
         const stat = fs.statSync(filePath);
         ul += `<li><a href="/${path.relative(servingDirectory, filePath)}">${file}</a></li>`;
     }
+    const up=fs.readFileSync("upload.html")
     return `<!DOCTYPE html>
             <html lang="en">
             <head>
@@ -106,11 +107,7 @@ async function generateHTMLList(dirPath) {
                 <title>File Upload</title>
             </head>
             <body>
-                <h1>Upload a File</h1>
-                <form action="/upload" method="POST" enctype="multipart/form-data">
-                    <input type="file" name="files" required multiple>
-                    <button type="submit">Upload</button>
-                </form>
+                ${up}
                 <br/>
                 ${ul}
             </body>
@@ -158,7 +155,10 @@ function setExpress(app) {
             cb(null, uploadDir);
         },
         filename: function (req, file, cb) {
-            cb(null, file.originalname);
+            const originalname = Buffer.from(file.originalname, "latin1").toString(
+                "utf8"
+              );
+            cb(null, originalname);
         }
     });
 

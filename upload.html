@@ -1,0 +1,83 @@
+<h1>Upload a File</h1>
+<input type="file" id="files_pre" required multiple>
+<button id="upload">Upload</button>
+<div id="info"></div>
+<div id="upload_info"></div>
+
+<script>
+    window.addEventListener('error', function (event) {
+        // Log the error details
+        console.error('Global error caught:', event.error);
+        alert(event.error)
+    });
+    async function uploadFiles() {
+        document.querySelector("#upload").disabled=true
+        const startTime = new Date().getTime(); // Record start time
+        const fileInput = document.getElementById('files_pre');
+        const files = Array.from(fileInput.files);
+
+        let totalSize = 0;
+        files.forEach(file => {
+            totalSize += file.size;
+        });
+
+        const totalSizeMB = totalSize / (1024 * 1024); // Convert total size to MB
+
+        document.getElementById('info').innerHTML = `
+        <p>Total number of files: ${files.length}</p>
+        <p>Total size: ${totalSizeMB.toFixed(2)} MB</p>
+    `;
+
+        // Group files into pairs
+        const filePairs = [];
+        for (let i = 0; i < files.length; i += 2) {
+            if (i + 1 < files.length) {
+                filePairs.push([files[i], files[i + 1]]);
+            } else {
+                filePairs.push([files[i]]);
+            }
+        }
+
+        // Upload files in sequence
+        let uploadedFiles = 0;
+        let uploadedSize = 0;
+        for (const pair of filePairs) {
+            await uploadPair(pair);
+            uploadedFiles += pair.length;
+            pair.forEach(file => {
+                uploadedSize += file.size;
+            });
+            updateProgress(uploadedFiles, uploadedSize, startTime);
+        }
+    }
+
+    async function uploadPair(pair) {
+        const formData = new FormData();
+        pair.forEach(file => {
+            formData.append('files', file);
+        });
+
+        // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint
+        const response = await fetch('upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            console.error('Files upload failed');
+        }
+    }
+
+    function updateProgress(uploadedFiles, uploadedSize, startTime) {
+        const currentTime = new Date().getTime(); // Record current time
+        const totalTimeInSeconds = (currentTime - startTime) / 1000; // Convert time difference to seconds
+        const uploadedSizeMB = uploadedSize / (1024 * 1024); // Convert uploaded size to MB
+
+        document.getElementById('upload_info').innerHTML = `
+        <p>Number of uploaded files: ${uploadedFiles}</p>
+        <p>Uploaded size: ${uploadedSizeMB.toFixed(2)} MB</p>
+        <p>Total time: ${totalTimeInSeconds.toFixed(2)} seconds</p>
+    `;
+    }
+    document.getElementById('upload').onclick = uploadFiles
+</script>
